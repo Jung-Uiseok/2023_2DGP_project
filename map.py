@@ -8,4 +8,4 @@ class Map:
         pass
 
     def draw(self):
-        self.image.draw(264, 257)
+        self.image.draw(397, 644)

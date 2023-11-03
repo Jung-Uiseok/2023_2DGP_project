@@ -11,8 +11,8 @@ def handle_event():
             game_framework.quit()
         elif event.type == SDL_KEYDOWN and SDLK_ESCAPE:
             game_framework.quit()
-        else:
-            character.handle_event(event)
+        # else:
+        #     character.handle_event(event)
 
 def init():
     global map
