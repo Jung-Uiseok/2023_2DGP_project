@@ -3,7 +3,8 @@ from pico2d import *
 open_canvas(258 * 4, 242 * 4)
 
 image = load_image('court1.png')
-character = load_image('baby-mario.gif')
+# character = load_image('baby-mario.gif')
+character = load_image('mario1.png')
 
 
 running = True
@@ -26,7 +27,7 @@ frame = 0
 for x in range(0, 258 * 4, 5):
     clear_canvas()
     image.draw_now(258 * 2, 242 * 2, image.w * 4, image.h * 4)
-    character.clip_draw(frame * 21, 0, 21, 27, x, 190, 210, 270)
+    character.clip_draw(frame * 88, 0, 88, 88, x, 190, 88, 88)
     update_canvas()
 
     handle_event()
