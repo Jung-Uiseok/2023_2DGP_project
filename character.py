@@ -53,8 +53,9 @@ class Idle:
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing()
+        # if space_down(e):
+        #     character.swing()
+        pass
 
     @staticmethod
     def do(character):
@@ -72,19 +73,20 @@ class Run:
     @staticmethod
     def enter(character, e):
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
-            character.dir ,character.action, character.face_dir = 1, 3, 1
+            character.dir, character.action, character.face_dir = 1, 3, 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
             character.dir, character.action, character.face_dir = -1, 7, 1
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing()
+        # if space_down(e):
+        #     character.swing()
+        pass
 
     @staticmethod
     def do(character):
         character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
-        character.x += RUN_SPEED_PPS * game_framework.frame_time
+        character.x += character.dir * RUN_SPEED_PPS * game_framework.frame_time
 
     @staticmethod
     def draw(character):
