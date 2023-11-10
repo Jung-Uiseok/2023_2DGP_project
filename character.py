@@ -64,7 +64,7 @@ class Idle:
 
     @staticmethod
     def draw(character):
-        character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y)
+        character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y, 88 * 3, 88 * 3)
 
 
 class Run:
@@ -72,9 +72,9 @@ class Run:
     @staticmethod
     def enter(character, e):
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
-            character.action = 3
+            character.dir ,character.action, character.face_dir = 1, 3, 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
-            character.action = 7
+            character.dir, character.action, character.face_dir = -1, 7, 1
 
     @staticmethod
     def exit(character, e):
@@ -88,14 +88,17 @@ class Run:
 
     @staticmethod
     def draw(character):
-        character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y)
+        character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y, 88 * 3, 88 * 3)
 
 
 class StateMachine:
     def __init__(self, character):
         self.character = character
         self.cur_state = Idle
-        self.transitions = {}
+        self.transitions = {
+            Idle : {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle},
+            Run : {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle}
+        }
 
     def start(self):
         self.cur_state.enter(self.character, ('NONE', 0))
@@ -119,10 +122,10 @@ class StateMachine:
 
 class Character:
     def __init__(self):
-        self.x, self.y = 500, 500
+        self.x, self.y = 258 * 2, 242 * 1.5
         self.frame = 0
-        self.action = 3
-        self.face_dir = 1
+        self.action = 0
+        self.face_dir = 2
         self.dir = 0
         self.image = load_image('mario1.png')
         self.state_machine = StateMachine(self)
