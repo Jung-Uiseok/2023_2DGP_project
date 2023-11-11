@@ -20,22 +20,6 @@ def left_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_LEFT
 
 
-def up_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_UP
-
-
-def up_up(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_UP
-
-
-def down_down(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_DOWN
-
-
-def down_up(e):
-    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_DOWN
-
-
 def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
@@ -62,10 +46,6 @@ class Idle:
         if character.face_dir == -1:
             character.action = 0
         elif character.face_dir == 1:
-            character.action = 0
-        elif character.face_dir == -2:
-            character.action = 0
-        elif character.face_dir == 2:
             character.action = 0
         character.dir = 0
         character.frame = 0
@@ -96,10 +76,6 @@ class Run:
             character.dir, character.action, character.face_dir = 1, 3, 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
             character.dir, character.action, character.face_dir = -1, 7, 1
-        elif up_down(e) or down_up(e): # 위쪽으로 RUN
-            character.dir, character.action, character.face_dir = 2, 5, 2
-        elif down_down(e) or up_up(e): # 아래쪽으로 RUN
-            character.dir, character.action, character.face_dir = -2, 9, -2
 
     @staticmethod
     def exit(character, e):
@@ -122,8 +98,8 @@ class StateMachine:
         self.character = character
         self.cur_state = Idle
         self.transitions = {
-            Idle : {right_down: Run, left_down: Run, right_up: Run, left_up: Run, up_down: Run, up_up: Run, down_down: Run, down_up: Run, space_down: Idle},
-            Run : {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle, up_down: Idle, up_up: Idle, down_down: Idle, down_up: Idle}
+            Idle : {right_down: Run, left_down: Run, right_up: Run, left_up: Run, space_down: Idle},
+            Run : {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle}
         }
 
     def start(self):
