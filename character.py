@@ -146,10 +146,10 @@ class StateMachine:
         self.character = character
         self.cur_state = Idle
         self.transitions = {
-            Idle: {right_down: RunLR, left_down: RunLR, right_up: Idle, left_up: Idle, up_down: RunUD, down_down: RunUD,
+            Idle: {right_down: RunLR, left_down: RunLR, up_down: RunUD, down_down: RunUD, right_up: Idle, left_up: Idle,
                    up_up: Idle, down_up: Idle, space_down: Idle},
             RunLR: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle},
-            RunUD: {up_down: Idle, up_up: Idle, down_down: Idle, down_up: Idle}
+            RunUD: {up_down: Idle, down_down: Idle, up_up: Idle, down_up: Idle},
         }
 
     def start(self):
