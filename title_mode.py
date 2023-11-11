@@ -7,10 +7,8 @@ import play_mode
 
 def init():
     global titleimage
-    # global startimage
 
     titleimage = load_image('title.png')
-    # startimage = load_image('start2.png')
 
 
 def finish():
@@ -37,7 +35,6 @@ def handle_events():
 def draw():
     clear_canvas()
     titleimage.draw(258 * 2, 242 * 2, titleimage.w * 7, titleimage.h * 7)
-    # startimage.draw(258 * 2, 242 * 2 - 170, startimage.w * 2, startimage.h * 2)
     update_canvas()
 
 
