@@ -1,5 +1,8 @@
 import time
 
+from game_world import objects
+
+
 def change_mode(mode):
     global stack
     if (len(stack) > 0):
@@ -63,3 +66,8 @@ def run(start_mode):
     while (len(stack) > 0):
         stack[-1].finish()
         stack.pop()
+
+
+def clear():
+    for layer in objects:
+        layer.clear

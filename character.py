@@ -98,7 +98,7 @@ class RunLR:
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
             character.dir, character.action, character.face_dir = 1, 3, 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
-            character.dir, character.action, character.face_dir = -1, 7, -1
+            character.dir, character.action, character.face_dir = -1, 7, 1
 
     @staticmethod
     def exit(character, e):
@@ -124,7 +124,31 @@ class RunUD:
         if up_down(e) or down_up(e):  # 위쪽으로 RUN
             character.dir, character.action, character.face_dir = 1, 5, 1
         elif down_down(e) or up_up(e):  # 아래쪽으로 RUN
-            character.dir, character.action, character.face_dir = -1, 9, -1
+            character.dir, character.action, character.face_dir = -1, 9, 1
+
+    @staticmethod
+    def exit(character, e):
+        if space_down(e):
+            character.swing_ball()
+        pass
+
+    @staticmethod
+    def do(character):
+        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
+        character.y += character.dir * RUN_SPEED_PPS * game_framework.frame_time
+
+    @staticmethod
+    def draw(character):
+        character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y,
+                                  88 * 3, 88 * 3)
+
+
+class Swing:
+
+    @staticmethod
+    def enter(character, e):
+        if space_down(e):
+            pass
 
     @staticmethod
     def exit(character, e):
@@ -149,7 +173,7 @@ class StateMachine:
         self.cur_state = Idle
         self.transitions = {
             Idle: {right_down: RunLR, left_down: RunLR, up_down: RunUD, down_down: RunUD, right_up: Idle, left_up: Idle,
-                   up_up: Idle, down_up: Idle, space_down: Idle},
+                   up_up: Idle, down_up: Idle},
             RunLR: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle},
             RunUD: {up_down: Idle, down_down: Idle, up_up: Idle, down_up: Idle},
         }
@@ -188,7 +212,7 @@ class Character:
         self.font = load_font('ENCR10B.TTF', 16)
 
     def swing_ball(self):
-        ball = Ball(self.x, self.y, self.face_dir*10)
+        ball = Ball(self.x, self.y, self.face_dir * 10)
         game_world.add_object(ball)
         game_world.add_collision_pair('character:ball', None, ball)
 
@@ -204,7 +228,7 @@ class Character:
         draw_rectangle(*self.get_bb())
 
     def get_bb(self):
-        return self.x-25, self.y-70, self.x+25, self.y+15
+        return self.x - 25, self.y - 70, self.x + 25, self.y + 15
 
     def handle_collision(self, group, other):
         pass

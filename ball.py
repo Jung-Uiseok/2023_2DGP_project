@@ -16,7 +16,7 @@ class Ball:
         draw_rectangle(*self.get_bb())
 
     def update(self):
-        self.x += self.velocity * 70 * game_framework.frame_time
+        self.y += self.velocity * 70 * game_framework.frame_time
 
         if self.x < 14 or self.x > 258 * 4 - 13:
             game_world.remove_object(self)
