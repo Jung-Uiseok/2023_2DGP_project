@@ -42,6 +42,10 @@ def space_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_SPACE
 
 
+def space_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_SPACE
+
+
 def time_out(e):
     return e[0] == 'TIME_OUT'
 
@@ -62,21 +66,21 @@ class Idle:
     @staticmethod
     def enter(character, e):
         if character.face_dir == -1:
-            character.action = 0
+            character.action = 23
         elif character.face_dir == 1:
-            character.action = 0
+            character.action = 23
         elif character.face_dir == -2:
-            character.action = 0
+            character.action = 23
         elif character.face_dir == 2:
-            character.action = 0
+            character.action = 23
         character.dir = 0
         character.frame = 0
         character.wait_time = get_time()
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
+        # if space_down(e):
+        #     character.swing_ball()
         pass
 
     @staticmethod
@@ -96,14 +100,14 @@ class RunLR:
     @staticmethod
     def enter(character, e):
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
-            character.dir, character.action, character.face_dir = 1, 3, 1
+            character.dir, character.action, character.face_dir = 1, 23 + 3, 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
-            character.dir, character.action, character.face_dir = -1, 7, 1
+            character.dir, character.action, character.face_dir = -1, 23 + 7, 1
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
+        # if space_down(e):
+        #     character.swing_ball()
         pass
 
     @staticmethod
@@ -122,14 +126,14 @@ class RunUD:
     @staticmethod
     def enter(character, e):
         if up_down(e) or down_up(e):  # 위쪽으로 RUN
-            character.dir, character.action, character.face_dir = 1, 5, 1
+            character.dir, character.action, character.face_dir = 1, 23 + 5, 1
         elif down_down(e) or up_up(e):  # 아래쪽으로 RUN
-            character.dir, character.action, character.face_dir = -1, 9, 1
+            character.dir, character.action, character.face_dir = -1, 23 + 9, 1
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
+        # if space_down(e):
+        #     character.swing_ball()
         pass
 
     @staticmethod
@@ -148,18 +152,15 @@ class Swing:
     @staticmethod
     def enter(character, e):
         if space_down(e):
-            pass
+            character.dir, character.action, character.face_dir = 1, 23 - 6, 1
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
         pass
 
     @staticmethod
     def do(character):
-        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
-        character.y += character.dir * RUN_SPEED_PPS * game_framework.frame_time
+        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 5
 
     @staticmethod
     def draw(character):
@@ -172,10 +173,15 @@ class StateMachine:
         self.character = character
         self.cur_state = Idle
         self.transitions = {
-            Idle: {right_down: RunLR, left_down: RunLR, up_down: RunUD, down_down: RunUD, right_up: Idle, left_up: Idle,
-                   up_up: Idle, down_up: Idle},
-            RunLR: {right_down: Idle, left_down: Idle, right_up: Idle, left_up: Idle},
-            RunUD: {up_down: Idle, down_down: Idle, up_up: Idle, down_up: Idle},
+            Idle: {right_down: RunLR, left_down: RunLR, up_down: RunUD, down_down: RunUD,
+                   right_up: Idle, left_up: Idle, up_up: Idle, down_up: Idle,
+                   space_down: Swing, space_up: Idle},
+            RunLR: {right_down: RunLR, left_down: RunLR, right_up: Idle, left_up: Idle,
+                    space_down: Swing, space_up: Idle},
+            RunUD: {up_down: Idle, down_down: Idle, up_up: Idle, down_up: Idle,
+                    space_down: Swing, space_up: Idle},
+            Swing: {space_down: Swing, space_up: Idle, right_down: RunLR, left_down: RunLR, up_down: RunUD,
+                    down_down: RunUD, right_up: Idle, left_up: Idle, up_up: Idle, down_up: Idle}
         }
 
     def start(self):
@@ -205,11 +211,14 @@ class Character:
         self.action = 0
         self.face_dir = 2
         self.dir = 0
-        self.image = load_image('mario1.png')
+        self.image = load_image('mario123.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.item = 'Ball'
         self.font = load_font('ENCR10B.TTF', 16)
+
+    def swing(self):
+        pass
 
     def swing_ball(self):
         ball = Ball(self.x, self.y, self.face_dir * 10)
