@@ -2,6 +2,7 @@ from pico2d import *
 import game_framework
 
 import game_world
+from ball import Ball
 from map import Map
 from character import Character
 
@@ -19,6 +20,7 @@ def handle_events():
 def init():
     global map
     global character
+    global ball
 
     running = True
 
@@ -28,12 +30,19 @@ def init():
     character = Character()
     game_world.add_object(character, 1)
 
+    # ball = Ball()
+    # game_world.add_object(ball, 1)
+
+    game_world.add_collision_pair('character:ball', character, None)
+    # game_world.add_collision_pair('character:ball', None, ball)
+
 
 def finish():
     game_world.clear()
 
 def update():
     game_world.update()
+    game_world.handle_collisions()
 
 def draw():
     clear_canvas()

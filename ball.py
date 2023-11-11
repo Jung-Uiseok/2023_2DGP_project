@@ -13,19 +13,19 @@ class Ball:
 
     def draw(self):
         self.image.draw(self.x, self.y)
-        # draw_rectangle(*self.get_bb())
+        draw_rectangle(*self.get_bb())
 
     def update(self):
-        self.x += self.velocity * 100 * game_framework.frame_time
+        self.x += self.velocity * 70 * game_framework.frame_time
 
-        # if self.x < 25 or self.x > 1600 - 25:
-        #     game_world.remove_object(self)
+        if self.x < 14 or self.x > 258 * 4 - 13:
+            game_world.remove_object(self)
+        if self.y < 13 or self.y > 242 * 7 - 13:
+            game_world.remove_object(self)
 
-    # def get_bb(self):
-    #     return self.x - 10, self.y - 10, self.x + 10, self.y + 10
-    #
-    # def handle_collision(self, group, other):
-    #     if group == 'character:ball':
-    #         game_world.remove_object(self)
+    def get_bb(self):
+        return self.x - 14, self.y - 13, self.x + 13, self.y + 13
 
-    pass
+    def handle_collision(self, group, other):
+        if group == 'character:ball':
+            pass

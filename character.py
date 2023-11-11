@@ -1,7 +1,9 @@
-from pico2d import load_image, get_time, load_font
+from pico2d import load_image, get_time, load_font, draw_rectangle
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE, SDLK_UP, SDLK_DOWN
 
 import game_framework
+import game_world
+from ball import Ball
 
 
 def right_down(e):
@@ -73,8 +75,8 @@ class Idle:
 
     @staticmethod
     def exit(character, e):
-        # if space_down(e):
-        #     character.swing()
+        if space_down(e):
+            character.swing_ball()
         pass
 
     @staticmethod
@@ -96,12 +98,12 @@ class RunLR:
         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
             character.dir, character.action, character.face_dir = 1, 3, 1
         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
-            character.dir, character.action, character.face_dir = -1, 7, 1
+            character.dir, character.action, character.face_dir = -1, 7, -1
 
     @staticmethod
     def exit(character, e):
-        # if space_down(e):
-        #     character.swing()
+        if space_down(e):
+            character.swing_ball()
         pass
 
     @staticmethod
@@ -120,14 +122,14 @@ class RunUD:
     @staticmethod
     def enter(character, e):
         if up_down(e) or down_up(e):  # 위쪽으로 RUN
-            character.dir, character.action, character.face_dir = 2, 5, 2
+            character.dir, character.action, character.face_dir = 1, 5, 1
         elif down_down(e) or up_up(e):  # 아래쪽으로 RUN
-            character.dir, character.action, character.face_dir = -2, 9, -2
+            character.dir, character.action, character.face_dir = -1, 9, -1
 
     @staticmethod
     def exit(character, e):
-        # if space_down(e):
-        #     character.swing()
+        if space_down(e):
+            character.swing_ball()
         pass
 
     @staticmethod
@@ -185,6 +187,11 @@ class Character:
         self.item = 'Ball'
         self.font = load_font('ENCR10B.TTF', 16)
 
+    def swing_ball(self):
+        ball = Ball(self.x, self.y, self.face_dir*10)
+        game_world.add_object(ball)
+        game_world.add_collision_pair('character:ball', None, ball)
+
     def update(self):
         self.state_machine.update()
 
@@ -194,3 +201,10 @@ class Character:
     def draw(self):
         self.state_machine.draw()
         self.font.draw(self.x - 60, self.y + 50, f'(Time:{get_time():.2f})', (255, 255, 0))
+        draw_rectangle(*self.get_bb())
+
+    def get_bb(self):
+        return self.x-25, self.y-70, self.x+25, self.y+15
+
+    def handle_collision(self, group, other):
+        pass
