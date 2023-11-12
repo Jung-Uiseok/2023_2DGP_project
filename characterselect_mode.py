@@ -1,0 +1,2 @@
+class CharacterSelect:
+    pass
