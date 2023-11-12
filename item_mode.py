@@ -1,6 +1,8 @@
 from pico2d import *
 
+import characterselect_mode
 import game_world
+import mapselect_mode
 import play_mode
 import title_mode
 
@@ -21,9 +23,11 @@ def handle_events():
                     game_framework.pop_mode()
                     game_framework.change_mode(title_mode)
                 case pico2d.SDLK_1:
-                    pass
+                    game_framework.pop_mode()
+                    game_framework.change_mode(characterselect_mode)
                 case pico2d.SDLK_2:
-                    pass
+                    game_framework.pop_mode()
+                    game_framework.change_mode(mapselect_mode)
 
 
 def init():
