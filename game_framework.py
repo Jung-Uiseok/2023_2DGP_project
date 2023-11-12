@@ -29,7 +29,6 @@ def pop_mode():
         stack[-1].finish()
         # remove the current mode
         stack.pop()
-
     # execute resume function of the previous mode
     if (len(stack) > 0):
         stack[-1].resume()
@@ -59,15 +58,9 @@ def run(start_mode):
         frame_rate = 1.0 / frame_time
         current_time += frame_time
 
-        # print(f'{frame_time} : {frame_rate}')
-        # fill here
-
     # repeatedly delete the top of the stack
     while (len(stack) > 0):
         stack[-1].finish()
         stack.pop()
 
 
-def clear():
-    for layer in objects:
-        layer.clear

@@ -24,14 +24,13 @@ def handle_events():
 
 def init():
     global map
-    global character
     global ball
+    global character
 
     running = True
 
     map = Map()
     game_world.add_object(map, 0)
-
     character = Character()
     game_world.add_object(character, 1)
 

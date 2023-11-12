@@ -18,7 +18,8 @@ def handle_events():
         elif event.type == SDL_KEYDOWN:
             match event.key:
                 case pico2d.SDLK_0:
-                    pass
+                    game_framework.pop_mode()
+                    game_framework.change_mode(title_mode)
                 case pico2d.SDLK_1:
                     pass
                 case pico2d.SDLK_2:
