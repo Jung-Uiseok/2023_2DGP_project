@@ -8,7 +8,7 @@ import play_mode
 def init():
     global titleimage
 
-    titleimage = load_image('title.png')
+    titleimage = load_image('title1.png')
 
 
 def finish():
