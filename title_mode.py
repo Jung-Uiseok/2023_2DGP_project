@@ -34,7 +34,7 @@ def handle_events():
 
 def draw():
     clear_canvas()
-    titleimage.draw(258 * 2, 242 * 2, titleimage.w * 7, titleimage.h * 7)
+    titleimage.draw(258 * 2, 242 * 2, titleimage.w * 6.9, titleimage.h * 6.9)
     update_canvas()
 
 

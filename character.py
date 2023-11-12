@@ -214,16 +214,17 @@ class Character:
         self.image = load_image('mario123.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
-        self.item = 'Ball'
+        self.item = None
         self.font = load_font('ENCR10B.TTF', 16)
 
     def swing(self):
         pass
 
     def swing_ball(self):
-        ball = Ball(self.x, self.y, self.face_dir * 10)
-        game_world.add_object(ball)
-        game_world.add_collision_pair('character:ball', None, ball)
+        if self.item == 'Ball':
+            ball = Ball(self.x, self.y, self.face_dir * 10)
+            game_world.add_object(ball)
+            game_world.add_collision_pair('character:ball', None, ball)
 
     def update(self):
         self.state_machine.update()
