@@ -1,3 +1,5 @@
+import math
+
 from pico2d import load_image, get_time, load_font, draw_rectangle, clamp
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE, SDLK_UP, SDLK_DOWN
 
@@ -23,19 +25,19 @@ def left_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_LEFT
 
 
-def up_down(e):
+def upkey_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_UP
 
 
-def up_up(e):
+def upkey_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_UP
 
 
-def down_down(e):
+def downkey_down(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_DOWN
 
 
-def down_up(e):
+def downkey_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_DOWN
 
 
@@ -66,17 +68,20 @@ class Idle:
 
     @staticmethod
     def enter(character, e):
-        if character.face_dir == -1:
-            character.action = 23
-        elif character.face_dir == 1:
-            character.action = 23
-        elif character.face_dir == -2:
-            character.action = 23
-        elif character.face_dir == 2:
-            character.action = 23
+        # if character.face_dir == -1:
+        #     character.action = 23
+        # elif character.face_dir == 1:
+        #     character.action = 23
+        # elif character.face_dir == -2:
+        #     character.action = 23
+        # elif character.face_dir == 2:
+        #     character.action = 23
+        # character.dir = 0
+        # character.frame = 0
+        # character.wait_time = get_time()
+        character.action = 23
+        character.speed = 0
         character.dir = 0
-        character.frame = 0
-        character.wait_time = get_time()
 
     @staticmethod
     def exit(character, e):
@@ -86,67 +91,194 @@ class Idle:
 
     @staticmethod
     def do(character):
-        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
-        if get_time() - character.wait_time > 2:
-            character.state_machine.handle_event(('TIME_OUT', 0))
+        # character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
+        # if get_time() - character.wait_time > 2:
+        #     character.state_machine.handle_event(('TIME_OUT', 0))
 
-    @staticmethod
-    def draw(character):
-        character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y,
-                                  88 * 3, 88 * 3)
+    # @staticmethod
+    # def draw(character):
+    #     character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y,
+    #                               88 * 3, 88 * 3)
 
-
-class RunLR:
-
+class RunRight:
     @staticmethod
     def enter(character, e):
-        if right_down(e) or left_up(e):  # 오른쪽으로 RUN
-            character.dir, character.action, character.face_dir = 1, 23 + 3, 1
-        elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
-            character.dir, character.action, character.face_dir = -1, 23 + 7, 1
+        character.action = 23 + 3
+        character.speed = RUN_SPEED_PPS
+        character.dir = 0
 
     @staticmethod
     def exit(character, e):
-        # if space_down(e):
-        #     character.swing_ball()
         pass
 
     @staticmethod
     def do(character):
-        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
-        character.x += character.dir * RUN_SPEED_PPS * game_framework.frame_time
-
-    @staticmethod
-    def draw(character):
-        character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y,
-                                  88 * 3, 88 * 3)
+        pass
 
 
-class RunUD:
-
+class RunRightUp:
     @staticmethod
     def enter(character, e):
-        if up_down(e) or down_up(e):  # 위쪽으로 RUN
-            character.dir, character.action, character.face_dir = 1, 23 + 5, 1
-        elif down_down(e) or up_up(e):  # 아래쪽으로 RUN
-            character.dir, character.action, character.face_dir = -1, 23 + 9, 1
+        character.action = 23 + 4
+        character.speed = RUN_SPEED_PPS
+        character.dir = math.pi / 4.0
 
     @staticmethod
     def exit(character, e):
-        # if space_down(e):
-        #     character.swing_ball()
         pass
 
     @staticmethod
     def do(character):
-        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
-        character.y += character.dir * RUN_SPEED_PPS * game_framework.frame_time
+        pass
+
+
+class RunRightDown:
+    @staticmethod
+    def enter(character, e):
+        character.action = 23 + 2
+        character.speed = RUN_SPEED_PPS
+        character.dir = - math.pi / 4.0
 
     @staticmethod
-    def draw(character):
-        character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y,
-                                  88 * 3, 88 * 3)
+    def exit(character, e):
+        pass
 
+    @staticmethod
+    def do(character):
+        pass
+
+
+class RunLeft:
+    @staticmethod
+    def enter(character, e):
+        character.action = 23 + 7
+        character.speed = RUN_SPEED_PPS
+        character.dir = math.pi
+
+    @staticmethod
+    def exit(character, e):
+        pass
+
+    @staticmethod
+    def do(character):
+        pass
+
+
+class RunLeftUp:
+    @staticmethod
+    def enter(character, e):
+        character.action = 23 + 6
+        character.speed = RUN_SPEED_PPS
+        character.dir = math.pi * 3.0 / 4.0
+
+    @staticmethod
+    def exit(character, e):
+        pass
+
+    @staticmethod
+    def do(character):
+        pass
+
+
+class RunLeftDown:
+    @staticmethod
+    def enter(character, e):
+        character.action = 23 + 8
+        character.speed = RUN_SPEED_PPS
+        character.dir = - math.pi * 3.0 / 4.0
+
+    @staticmethod
+    def exit(character, e):
+        pass
+
+    @staticmethod
+    def do(character):
+        pass
+
+
+class RunUp:
+    @staticmethod
+    def enter(character, e):
+        character.action = 23 + 5
+        character.speed = RUN_SPEED_PPS
+        character.dir = math.pi / 2.0
+
+    @staticmethod
+    def exit(character, e):
+        pass
+
+    @staticmethod
+    def do(character):
+        pass
+
+
+class RunDown:
+    @staticmethod
+    def enter(character, e):
+        character.action = 23 + 9
+        character.speed = RUN_SPEED_PPS
+        character.dir = - math.pi / 2.0
+
+    @staticmethod
+    def exit(character, e):
+        pass
+
+    @staticmethod
+    def do(character):
+        pass
+
+
+# class RunLR:
+#
+#     @staticmethod
+#     def enter(character, e):
+#         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
+#             character.dir, character.action, character.face_dir = 1, 23 + 3, 1
+#         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
+#             character.dir, character.action, character.face_dir = -1, 23 + 7, 1
+#
+#     @staticmethod
+#     def exit(character, e):
+#         # if space_down(e):
+#         #     character.swing_ball()
+#         pass
+#
+#     @staticmethod
+#     def do(character):
+#         character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
+#         character.x += character.dir * RUN_SPEED_PPS * game_framework.frame_time
+#
+#     @staticmethod
+#     def draw(character):
+#         character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y,
+#                                   88 * 3, 88 * 3)
+#
+#
+# class RunUD:
+#
+#     @staticmethod
+#     def enter(character, e):
+#         if upkey_down(e) or downkey_up(e):  # 위쪽으로 RUN
+#             character.dir, character.action, character.face_dir = 1, 23 + 5, 1
+#         elif downkey_down(e) or upkey_up(e):  # 아래쪽으로 RUN
+#             character.dir, character.action, character.face_dir = -1, 23 + 9, 1
+#
+#     @staticmethod
+#     def exit(character, e):
+#         # if space_down(e):
+#         #     character.swing_ball()
+#         pass
+#
+#     @staticmethod
+#     def do(character):
+#         character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
+#         character.y += character.dir * RUN_SPEED_PPS * game_framework.frame_time
+#
+#     @staticmethod
+#     def draw(character):
+#         character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y,
+#                                   88 * 3, 88 * 3)
+#
 
 class Swing:
 
@@ -174,15 +306,20 @@ class StateMachine:
         self.character = character
         self.cur_state = Idle
         self.transitions = {
-            Idle: {right_down: RunLR, left_down: RunLR, up_down: RunUD, down_down: RunUD,
-                   right_up: Idle, left_up: Idle, up_up: Idle, down_up: Idle,
-                   space_down: Swing, space_up: Idle},
-            RunLR: {right_down: RunLR, left_down: RunLR, right_up: Idle, left_up: Idle,
-                    space_down: Swing, space_up: Idle},
-            RunUD: {up_down: Idle, down_down: Idle, up_up: Idle, down_up: Idle,
-                    space_down: Swing, space_up: Idle},
-            Swing: {space_down: Swing, space_up: Idle, right_down: RunLR, left_down: RunLR, up_down: RunUD,
-                    down_down: RunUD, right_up: Idle, left_up: Idle, up_up: Idle, down_up: Idle}
+            Idle: {right_down: RunRight, left_down: RunLeft, left_up: RunRight, right_up: RunLeft, upkey_down: RunUp,
+                   downkey_down: RunDown, upkey_up: RunDown, downkey_up: RunUp},
+            RunRight: {right_up: Idle, left_down: Idle, upkey_down: RunRightUp, upkey_up: RunRightDown,
+                       downkey_down: RunRightDown, downkey_up: RunRightUp},
+            RunRightUp: {upkey_up: RunRight, right_up: RunUp, left_down: RunUp, downkey_down: RunRight},
+            RunUp: {upkey_up: Idle, left_down: RunLeftUp, downkey_down: Idle, right_down: RunRightUp,
+                    left_up: RunRightUp, right_up: RunLeftUp},
+            RunLeftUp: {right_down: RunUp, downkey_down: RunLeft, left_up: RunUp, upkey_up: RunLeft},
+            RunLeft: {left_up: Idle, upkey_down: RunLeftUp, right_down: Idle, downkey_down: RunLeftDown,
+                      upkey_up: RunLeftDown, downkey_up: RunLeftUp},
+            RunLeftDown: {left_up: RunDown, downkey_up: RunLeft, upkey_down: RunLeft, right_down: RunDown},
+            RunDown: {downkey_up: Idle, left_down: RunLeftDown, upkey_down: Idle, right_down: RunRightDown,
+                      left_up: RunRightDown, right_up: RunLeftDown},
+            RunRightDown: {right_up: RunDown, downkey_up: RunRight, left_down: RunDown, upkey_down: RunRight}
         }
 
     def start(self):
@@ -190,6 +327,9 @@ class StateMachine:
 
     def update(self):
         self.cur_state.do(self.character)
+        self.character.frame = (self.character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        self.character.x += math.cos(self.character.dir) * self.character.speed * game_framework.frame_time
+        self.character.y += math.sin(self.character.dir) * self.character.speed * game_framework.frame_time
 
     def handle_event(self, e):
         for check_evnet, next_state in self.transitions[self.cur_state].items():
