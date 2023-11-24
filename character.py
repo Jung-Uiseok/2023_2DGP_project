@@ -238,7 +238,7 @@ class Character:
 
     def draw(self):
         # self.state_machine.draw()
-        # self.font.draw(self.x - 60, self.y + 50, f'(Time:{get_time():.2f})', (255, 255, 0))
+        self.font.draw(self.x - 60, self.y + 50, f'({int(self.x)}, {int(self.y)})', (255, 255, 0))
         # draw_rectangle(*self.get_bb())
         sx = self.x - server.background.window_left
         sy = self.y - server.background.window_bottom
