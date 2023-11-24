@@ -3,10 +3,13 @@ import game_framework
 
 import game_world
 import item_mode
+import server
 import title_mode
 from ball import Ball
 from map import Map
 from character import Character
+
+from background import FixedBackground as Background
 
 
 def handle_events():
@@ -17,26 +20,29 @@ def handle_events():
         elif event.type == SDL_KEYDOWN and event.key == SDLK_ESCAPE:
             game_framework.push_mode(item_mode)
         else:
-            character.handle_event(event)
+            server.character.handle_event(event)
 
 
 def init():
-    global map
-    global ball
-    global character
+    # global map
+    # global ball
+    # global character
+    #
+    # running = True
+    #
+    # map = Map()
+    # game_world.add_object(map, 0)
+    # character = Character()
+    # game_world.add_object(character, 1)
+    #
+    # game_world.add_collision_pair('character:ball', character, None)
 
-    running = True
+    server.background = Background()
+    game_world.add_object(server.background, 0)
 
-    map = Map()
-    game_world.add_object(map, 0)
-    character = Character()
-    game_world.add_object(character, 1)
-
-    # ball = Ball()
-    # game_world.add_object(ball, 1)
-
-    game_world.add_collision_pair('character:ball', character, None)
-    # game_world.add_collision_pair('character:ball', None, ball)
+    server.character = Character()
+    game_world.add_object(server.character, 1)
+    game_world.add_collision_pair('boy:ball', server.character, None)
 
 
 def finish():

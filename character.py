@@ -1,8 +1,9 @@
-from pico2d import load_image, get_time, load_font, draw_rectangle
+from pico2d import load_image, get_time, load_font, draw_rectangle, clamp
 from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE, SDLK_UP, SDLK_DOWN
 
 import game_framework
 import game_world
+import server
 from ball import Ball
 
 
@@ -206,7 +207,6 @@ class StateMachine:
 
 class Character:
     def __init__(self):
-        self.x, self.y = 258 * 2, 242 * 1.5
         self.frame = 0
         self.action = 0
         self.face_dir = 2
@@ -216,6 +216,8 @@ class Character:
         self.state_machine.start()
         self.item = None
         self.font = load_font('ENCR10B.TTF', 16)
+        # self.x, self.y = 258 * 2, 242 * 1.5
+        self.x, self.y = server.background.w // 2, server.background.h // 2
 
     def swing(self):
         pass
@@ -228,14 +230,20 @@ class Character:
 
     def update(self):
         self.state_machine.update()
+        self.x = clamp(30, self.x, server.background.w - 30)
+        self.y = clamp(30, self.y, server.background.h - 30)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
 
     def draw(self):
-        self.state_machine.draw()
-        self.font.draw(self.x - 60, self.y + 50, f'(Time:{get_time():.2f})', (255, 255, 0))
-        draw_rectangle(*self.get_bb())
+        # self.state_machine.draw()
+        # self.font.draw(self.x - 60, self.y + 50, f'(Time:{get_time():.2f})', (255, 255, 0))
+        # draw_rectangle(*self.get_bb())
+        sx = self.x - server.background.window_left
+        sy = self.y - server.background.window_bottom
+        self.image.clip_draw(int(self.frame) * 88, self.action * 88, 88, 88, sx, sy, 88 * 3, 88 * 3)
+        draw_rectangle(sx - 25, sy - 70, sx + 25, sy + 15)
 
     def get_bb(self):
         return self.x - 25, self.y - 70, self.x + 25, self.y + 15
