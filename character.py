@@ -69,17 +69,6 @@ class Idle:
 
     @staticmethod
     def enter(character, e):
-        # if character.face_dir == -1:
-        #     character.action = 23
-        # elif character.face_dir == 1:
-        #     character.action = 23
-        # elif character.face_dir == -2:
-        #     character.action = 23
-        # elif character.face_dir == 2:
-        #     character.action = 23
-        # character.dir = 0
-        # character.frame = 0
-        # character.wait_time = get_time()
         character.action = 23
         character.speed = 0
         character.dir = 0
@@ -87,20 +76,12 @@ class Idle:
     @staticmethod
     def exit(character, e):
         if space_down(e):
-            character.swing()
+            character.swing_ball()
         pass
 
     @staticmethod
     def do(character):
-        # character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
-        # if get_time() - character.wait_time > 2:
-        #     character.state_machine.handle_event(('TIME_OUT', 0))
         pass
-
-    # @staticmethod
-    # def draw(character):
-    #     character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y,
-    #                               88 * 3, 88 * 3)
 
 
 class RunRight:
@@ -112,6 +93,8 @@ class RunRight:
 
     @staticmethod
     def exit(character, e):
+        if space_down(e):
+            character.swing_ball()
         pass
 
     @staticmethod
@@ -128,6 +111,8 @@ class RunRightUp:
 
     @staticmethod
     def exit(character, e):
+        if space_down(e):
+            character.swing_ball()
         pass
 
     @staticmethod
@@ -144,6 +129,8 @@ class RunRightDown:
 
     @staticmethod
     def exit(character, e):
+        if space_down(e):
+            character.swing_ball()
         pass
 
     @staticmethod
@@ -160,6 +147,8 @@ class RunLeft:
 
     @staticmethod
     def exit(character, e):
+        if space_down(e):
+            character.swing_ball()
         pass
 
     @staticmethod
@@ -176,6 +165,8 @@ class RunLeftUp:
 
     @staticmethod
     def exit(character, e):
+        if space_down(e):
+            character.swing_ball()
         pass
 
     @staticmethod
@@ -192,6 +183,8 @@ class RunLeftDown:
 
     @staticmethod
     def exit(character, e):
+        if space_down(e):
+            character.swing_ball()
         pass
 
     @staticmethod
@@ -208,6 +201,8 @@ class RunUp:
 
     @staticmethod
     def exit(character, e):
+        if space_down(e):
+            character.swing_ball()
         pass
 
     @staticmethod
@@ -224,6 +219,8 @@ class RunDown:
 
     @staticmethod
     def exit(character, e):
+        if space_down(e):
+            character.swing_ball()
         pass
 
     @staticmethod
@@ -231,66 +228,12 @@ class RunDown:
         pass
 
 
-# class RunLR:
-#
-#     @staticmethod
-#     def enter(character, e):
-#         if right_down(e) or left_up(e):  # 오른쪽으로 RUN
-#             character.dir, character.action, character.face_dir = 1, 23 + 3, 1
-#         elif left_down(e) or right_up(e):  # 왼쪽으로 RUN
-#             character.dir, character.action, character.face_dir = -1, 23 + 7, 1
-#
-#     @staticmethod
-#     def exit(character, e):
-#         # if space_down(e):
-#         #     character.swing_ball()
-#         pass
-#
-#     @staticmethod
-#     def do(character):
-#         character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
-#         character.x += character.dir * RUN_SPEED_PPS * game_framework.frame_time
-#
-#     @staticmethod
-#     def draw(character):
-#         character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y,
-#                                   88 * 3, 88 * 3)
-#
-#
-# class RunUD:
-#
-#     @staticmethod
-#     def enter(character, e):
-#         if upkey_down(e) or downkey_up(e):  # 위쪽으로 RUN
-#             character.dir, character.action, character.face_dir = 1, 23 + 5, 1
-#         elif downkey_down(e) or upkey_up(e):  # 아래쪽으로 RUN
-#             character.dir, character.action, character.face_dir = -1, 23 + 9, 1
-#
-#     @staticmethod
-#     def exit(character, e):
-#         # if space_down(e):
-#         #     character.swing_ball()
-#         pass
-#
-#     @staticmethod
-#     def do(character):
-#         character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
-#         character.y += character.dir * RUN_SPEED_PPS * game_framework.frame_time
-#
-#     @staticmethod
-#     def draw(character):
-#         character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y,
-#                                   88 * 3, 88 * 3)
-#
-
-class Swing:
+class SwingUp:
 
     @staticmethod
     def enter(character, e):
-        # if space_down(e):
-        #     character.dir, character.action, character.face_dir = 1, 23 - 6, 1
         character.action = 23 - 6
-        character.speed = RUN_SPEED_PPS
+        character.speed = 0
         character.dir = 0
 
     @staticmethod
@@ -299,13 +242,41 @@ class Swing:
 
     @staticmethod
     def do(character):
-        character.frame = (character.frame + FRAMES_PER_ACTION_FIV * ACTION_PER_TIME * game_framework.frame_time) % 5
+        pass
+
+
+class SwingLeft:
+
+    @staticmethod
+    def enter(character, e):
+        character.action = 23 - 4
+        character.speed = 0
+        character.dir = 0
+
+    @staticmethod
+    def exit(character, e):
         pass
 
     @staticmethod
-    def draw(character):
-        character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y,
-                                  88 * 3, 88 * 3)
+    def do(character):
+        pass
+
+
+class SwingRight:
+
+    @staticmethod
+    def enter(character, e):
+        character.action = 23 - 2
+        character.speed = 0
+        character.dir = 0
+
+    @staticmethod
+    def exit(character, e):
+        pass
+
+    @staticmethod
+    def do(character):
+        pass
 
 
 class StateMachine:
@@ -313,20 +284,23 @@ class StateMachine:
         self.character = character
         self.cur_state = Idle
         self.transitions = {
-            Idle: {right_down: RunRight, left_down: RunLeft, left_up: RunRight, right_up: RunLeft, upkey_down: RunUp,
-                   downkey_down: RunDown, upkey_up: RunDown, downkey_up: RunUp},
+            Idle: {right_down: RunRight, left_down: RunLeft, left_up: Idle, right_up: Idle, upkey_down: RunUp,
+                   downkey_down: RunDown, upkey_up: Idle, downkey_up: Idle, space_down: SwingUp},
             RunRight: {right_up: Idle, left_down: Idle, upkey_down: RunRightUp, upkey_up: RunRightDown,
-                       downkey_down: RunRightDown, downkey_up: RunRightUp},
-            RunRightUp: {upkey_up: RunRight, right_up: RunUp, left_down: RunUp, downkey_down: RunRight},
+                       downkey_down: RunRightDown, downkey_up: RunRightUp, space_down: SwingRight},
+            RunRightUp: {upkey_up: RunRight, right_up: RunUp, left_down: RunUp, downkey_down: RunRight, space_down: SwingRight},
             RunUp: {upkey_up: Idle, left_down: RunLeftUp, downkey_down: Idle, right_down: RunRightUp,
-                    left_up: RunRightUp, right_up: RunLeftUp},
-            RunLeftUp: {right_down: RunUp, downkey_down: RunLeft, left_up: RunUp, upkey_up: RunLeft, space_down: Swing},
+                    left_up: RunRightUp, right_up: RunLeftUp, space_down: SwingUp},
+            RunLeftUp: {right_down: RunUp, downkey_down: RunLeft, left_up: RunUp, upkey_up: RunLeft, space_down: SwingLeft},
             RunLeft: {left_up: Idle, upkey_down: RunLeftUp, right_down: Idle, downkey_down: RunLeftDown,
-                      upkey_up: RunLeftDown, downkey_up: RunLeftUp},
-            RunLeftDown: {left_up: RunDown, downkey_up: RunLeft, upkey_down: RunLeft, right_down: RunDown},
+                      upkey_up: RunLeftDown, downkey_up: RunLeftUp, space_down: SwingLeft},
+            RunLeftDown: {left_up: RunDown, downkey_up: RunLeft, upkey_down: RunLeft, right_down: RunDown, space_down: SwingLeft},
             RunDown: {downkey_up: Idle, left_down: RunLeftDown, upkey_down: Idle, right_down: RunRightDown,
-                      left_up: RunRightDown, right_up: RunLeftDown},
-            RunRightDown: {right_up: RunDown, downkey_up: RunRight, left_down: RunDown, upkey_down: RunRight}
+                      left_up: RunRightDown, right_up: RunLeftDown, space_down: SwingUp},
+            RunRightDown: {right_up: RunDown, downkey_up: RunRight, left_down: RunDown, upkey_down: RunRight, space_down: SwingRight},
+            SwingUp: {space_up: Idle},
+            SwingLeft: {space_up: Idle},
+            SwingRight: {space_up: Idle}
         }
 
     def start(self):
@@ -348,42 +322,38 @@ class StateMachine:
 
         return False
 
-    # def draw(self):
-    #     self.cur_state.draw(self.character)
-
 
 class Character:
     def __init__(self):
         self.frame = 0
         self.action = 0
         # self.face_dir = 2
-        # self.dir = 0
+        self.dir = 0
         self.image = load_image('mario123.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
-        # self.item = None
+        self.ball_count = 1
         self.font = load_font('ENCR10B.TTF', 16)
         # self.x, self.y = 258 * 2, 242 * 1.5
         self.x, self.y = server.background.w // 2, server.background.h // 2
 
     def swing(self):
         self.action = 23 - 6
-        self.speed = 0
-        self.dir = 0
         self.frame = (self.frame + FRAMES_PER_ACTION_FIV * ACTION_PER_TIME * game_framework.frame_time) % 5
         self.image.clip_draw(int(self.frame) * 88, self.action * 88, 88, 88, self.x, self.y, 88 * 3, 88 * 3)
         pass
 
     def swing_ball(self):
-        if self.item == 'Ball':
-            ball = Ball(self.x, self.y, self.face_dir * 10)
+        if self.ball_count > 0:
+            self.ball_count -= 1
+            ball = Ball(self.x, self.y, self.dir*10)
             game_world.add_object(ball)
             game_world.add_collision_pair('character:ball', None, ball)
 
     def update(self):
         self.state_machine.update()
         self.x = clamp(30, self.x, server.background.w - 30)
-        self.y = clamp(70, self.y, server.background.h - 30)
+        self.y = clamp(70, self.y, 1500)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
@@ -395,10 +365,11 @@ class Character:
         sy = self.y - server.background.window_bottom
         self.image.clip_draw(int(self.frame) * 88, self.action * 88, 88, 88, sx, sy, 88 * 3, 88 * 3)
         draw_rectangle(sx - 25, sy - 70, sx + 25, sy + 15)
-        self.font.draw(sx - 60, sy + 50, f'({int(sx)}, {int(sy)})', (255, 255, 0))
+        self.font.draw(sx - 60, sy + 50, f'({int(self.x)}, {int(self.y)})', (255, 255, 0))
 
     def get_bb(self):
         return self.x - 25, self.y - 70, self.x + 25, self.y + 15
 
     def handle_collision(self, group, other):
-        pass
+        if group == 'character:ball':
+            pass

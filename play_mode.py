@@ -44,9 +44,9 @@ def init():
     game_world.add_object(server.character, 1)
     game_world.add_collision_pair('character:ball', server.character, None)
 
-    server.ball = Ball()
-    game_world.add_object(server.ball, 1)
-    game_world.add_collision_pair('character:ball', None, server.ball)
+    # server.ball = Ball()
+    # game_world.add_object(server.ball, 1)
+    # game_world.add_collision_pair('character:ball', None, server.ball)
 
 
 def finish():
