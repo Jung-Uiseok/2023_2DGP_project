@@ -94,11 +94,13 @@ class Idle:
         # character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
         # if get_time() - character.wait_time > 2:
         #     character.state_machine.handle_event(('TIME_OUT', 0))
+        pass
 
     # @staticmethod
     # def draw(character):
     #     character.image.clip_draw(int(character.frame) * 88, character.action * 88, 88, 88, character.x, character.y,
     #                               88 * 3, 88 * 3)
+
 
 class RunRight:
     @staticmethod
@@ -327,7 +329,7 @@ class StateMachine:
 
     def update(self):
         self.cur_state.do(self.character)
-        self.character.frame = (self.character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 8
+        self.character.frame = (self.character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
         self.character.x += math.cos(self.character.dir) * self.character.speed * game_framework.frame_time
         self.character.y += math.sin(self.character.dir) * self.character.speed * game_framework.frame_time
 
@@ -341,20 +343,20 @@ class StateMachine:
 
         return False
 
-    def draw(self):
-        self.cur_state.draw(self.character)
+    # def draw(self):
+    #     self.cur_state.draw(self.character)
 
 
 class Character:
     def __init__(self):
         self.frame = 0
         self.action = 0
-        self.face_dir = 2
-        self.dir = 0
+        # self.face_dir = 2
+        # self.dir = 0
         self.image = load_image('mario123.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
-        self.item = None
+        # self.item = None
         self.font = load_font('ENCR10B.TTF', 16)
         # self.x, self.y = 258 * 2, 242 * 1.5
         self.x, self.y = server.background.w // 2, server.background.h // 2
