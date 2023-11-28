@@ -62,6 +62,7 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 6
+FRAMES_PER_ACTION_FIV = 5
 
 
 class Idle:
@@ -85,8 +86,8 @@ class Idle:
 
     @staticmethod
     def exit(character, e):
-        # if space_down(e):
-        #     character.swing_ball()
+        if space_down(e):
+            character.swing()
         pass
 
     @staticmethod
@@ -286,8 +287,11 @@ class Swing:
 
     @staticmethod
     def enter(character, e):
-        if space_down(e):
-            character.dir, character.action, character.face_dir = 1, 23 - 6, 1
+        # if space_down(e):
+        #     character.dir, character.action, character.face_dir = 1, 23 - 6, 1
+        character.action = 23 - 6
+        character.speed = RUN_SPEED_PPS
+        character.dir = 0
 
     @staticmethod
     def exit(character, e):
@@ -295,7 +299,8 @@ class Swing:
 
     @staticmethod
     def do(character):
-        character.frame = (character.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 5
+        character.frame = (character.frame + FRAMES_PER_ACTION_FIV * ACTION_PER_TIME * game_framework.frame_time) % 5
+        pass
 
     @staticmethod
     def draw(character):
@@ -315,7 +320,7 @@ class StateMachine:
             RunRightUp: {upkey_up: RunRight, right_up: RunUp, left_down: RunUp, downkey_down: RunRight},
             RunUp: {upkey_up: Idle, left_down: RunLeftUp, downkey_down: Idle, right_down: RunRightUp,
                     left_up: RunRightUp, right_up: RunLeftUp},
-            RunLeftUp: {right_down: RunUp, downkey_down: RunLeft, left_up: RunUp, upkey_up: RunLeft},
+            RunLeftUp: {right_down: RunUp, downkey_down: RunLeft, left_up: RunUp, upkey_up: RunLeft, space_down: Swing},
             RunLeft: {left_up: Idle, upkey_down: RunLeftUp, right_down: Idle, downkey_down: RunLeftDown,
                       upkey_up: RunLeftDown, downkey_up: RunLeftUp},
             RunLeftDown: {left_up: RunDown, downkey_up: RunLeft, upkey_down: RunLeft, right_down: RunDown},
@@ -362,6 +367,11 @@ class Character:
         self.x, self.y = server.background.w // 2, server.background.h // 2
 
     def swing(self):
+        self.action = 23 - 6
+        self.speed = 0
+        self.dir = 0
+        self.frame = (self.frame + FRAMES_PER_ACTION_FIV * ACTION_PER_TIME * game_framework.frame_time) % 5
+        self.image.clip_draw(int(self.frame) * 88, self.action * 88, 88, 88, self.x, self.y, 88 * 3, 88 * 3)
         pass
 
     def swing_ball(self):
@@ -373,19 +383,19 @@ class Character:
     def update(self):
         self.state_machine.update()
         self.x = clamp(30, self.x, server.background.w - 30)
-        self.y = clamp(30, self.y, server.background.h - 30)
+        self.y = clamp(70, self.y, server.background.h - 30)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
 
     def draw(self):
         # self.state_machine.draw()
-        self.font.draw(self.x - 60, self.y + 50, f'({int(self.x)}, {int(self.y)})', (255, 255, 0))
         # draw_rectangle(*self.get_bb())
         sx = self.x - server.background.window_left
         sy = self.y - server.background.window_bottom
         self.image.clip_draw(int(self.frame) * 88, self.action * 88, 88, 88, sx, sy, 88 * 3, 88 * 3)
         draw_rectangle(sx - 25, sy - 70, sx + 25, sy + 15)
+        self.font.draw(sx - 60, sy + 50, f'({int(sx)}, {int(sy)})', (255, 255, 0))
 
     def get_bb(self):
         return self.x - 25, self.y - 70, self.x + 25, self.y + 15
