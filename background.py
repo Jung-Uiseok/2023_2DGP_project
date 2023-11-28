@@ -9,12 +9,12 @@ from pico2d import *
 class FixedBackground:
 
     def __init__(self):
-        self.image = load_image('court1.png')
+        self.image = load_image('court2.png')
         self.cw = get_canvas_width()
         self.ch = get_canvas_height()
 
-        self.w = self.image.w * 4
-        self.h = self.image.h * 4
+        self.w = self.image.w
+        self.h = self.image.h
 
     def draw(self):
         # fill here

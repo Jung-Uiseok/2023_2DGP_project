@@ -9,7 +9,7 @@ import play_mode
 def init():
     global titleimage
 
-    titleimage = load_image('title1.png')
+    titleimage = load_image('title3.png')
 
 
 def finish():
@@ -35,7 +35,7 @@ def handle_events():
 
 def draw():
     clear_canvas()
-    titleimage.draw(258 * 2, 242 * 2, titleimage.w * 6.9, titleimage.h * 6.9)
+    titleimage.draw(400, 400)
     update_canvas()
 
 

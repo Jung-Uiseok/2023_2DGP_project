@@ -44,7 +44,7 @@ def handle_events():
 
 def draw():
     clear_canvas()
-    mapselectimage.draw(258 * 2, 242 * 2, mapselectimage.w * 4, mapselectimage.h * 4)
+    mapselectimage.draw(400, 400, mapselectimage.w * 4, mapselectimage.h * 4)
     update_canvas()
 
 

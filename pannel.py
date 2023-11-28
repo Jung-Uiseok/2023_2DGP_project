@@ -7,7 +7,7 @@ class Pannel:
         self.image = load_image('menu_select.png')
 
     def draw(self):
-        self.image.draw(258 * 2, 242 * 2)
+        self.image.draw(400, 400)
 
     def update(self):
         pass
