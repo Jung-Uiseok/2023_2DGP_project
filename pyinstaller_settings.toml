@@ -1,0 +1,17 @@
+# 메인 파일 이름을 지정하세요.
+main_file = 'main.py'
+
+# 데이타 파일들을 지정하세요.
+data_files = [
+    # fill here
+    'court1.png', 'court2.png', 'ENCR10B.TTF', 'mapselect1.png', 'mapselect2.png', 'mapselect3.png', 'mapselect4.png',
+    'mario.png', 'mario1.png', 'mario2.png', 'mario123.png', 'menu_select.png', 'tennis_ball.png', 'tennis_ball1.png',
+    'tennis_ball2.png', 'tennis_ball3.png', 'tennis_ball4.png', 'tennis_ball5.png', 'title.png', 'title1.png',
+    'title2.png', 'title3.png'
+]
+
+# 데이타가 들어있는 폴더들을 지정하세요.
+data_folders = [
+
+]
+
