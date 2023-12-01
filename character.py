@@ -1,12 +1,13 @@
 import math
 
 from pico2d import load_image, get_time, load_font, draw_rectangle, clamp
-from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE, SDLK_UP, SDLK_DOWN
+from sdl2 import SDL_KEYDOWN, SDLK_RIGHT, SDL_KEYUP, SDLK_LEFT, SDLK_SPACE, SDLK_UP, SDLK_DOWN, SDLK_s
 
 import game_framework
 import game_world
 import server
 from ball import Ball
+from behavior_tree import BehaviorTree, Action, Sequence, Condition, Selector
 
 
 def right_down(e):
@@ -49,6 +50,14 @@ def space_up(e):
     return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_SPACE
 
 
+def skey_down(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYDOWN and e[1].key == SDLK_s
+
+
+def skey_up(e):
+    return e[0] == 'INPUT' and e[1].type == SDL_KEYUP and e[1].key == SDLK_s
+
+
 def time_out(e):
     return e[0] == 'TIME_OUT'
 
@@ -62,7 +71,6 @@ RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 TIME_PER_ACTION = 0.5
 ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
 FRAMES_PER_ACTION = 6
-FRAMES_PER_ACTION_FIV = 5
 
 
 class Idle:
@@ -279,28 +287,51 @@ class SwingRight:
         pass
 
 
+class Serve:
+
+    @staticmethod
+    def enter(character, e):
+        character.action = 23 - 8
+        character.speed = 0
+        character.dir = 0
+
+    @staticmethod
+    def exit(character, e):
+        pass
+
+    @staticmethod
+    def do(character):
+        pass
+
+
 class StateMachine:
+
     def __init__(self, character):
         self.character = character
         self.cur_state = Idle
         self.transitions = {
             Idle: {right_down: RunRight, left_down: RunLeft, left_up: Idle, right_up: Idle, upkey_down: RunUp,
-                   downkey_down: RunDown, upkey_up: Idle, downkey_up: Idle, space_down: SwingUp},
+                   downkey_down: RunDown, upkey_up: Idle, downkey_up: Idle, space_down: SwingUp, skey_down: Serve},
             RunRight: {right_up: Idle, left_down: Idle, upkey_down: RunRightUp, upkey_up: RunRightDown,
                        downkey_down: RunRightDown, downkey_up: RunRightUp, space_down: SwingRight},
-            RunRightUp: {upkey_up: RunRight, right_up: RunUp, left_down: RunUp, downkey_down: RunRight, space_down: SwingRight},
+            RunRightUp: {upkey_up: RunRight, right_up: RunUp, left_down: RunUp, downkey_down: RunRight,
+                         space_down: SwingRight},
             RunUp: {upkey_up: Idle, left_down: RunLeftUp, downkey_down: Idle, right_down: RunRightUp,
                     left_up: RunRightUp, right_up: RunLeftUp, space_down: SwingUp},
-            RunLeftUp: {right_down: RunUp, downkey_down: RunLeft, left_up: RunUp, upkey_up: RunLeft, space_down: SwingLeft},
+            RunLeftUp: {right_down: RunUp, downkey_down: RunLeft, left_up: RunUp, upkey_up: RunLeft,
+                        space_down: SwingLeft},
             RunLeft: {left_up: Idle, upkey_down: RunLeftUp, right_down: Idle, downkey_down: RunLeftDown,
                       upkey_up: RunLeftDown, downkey_up: RunLeftUp, space_down: SwingLeft},
-            RunLeftDown: {left_up: RunDown, downkey_up: RunLeft, upkey_down: RunLeft, right_down: RunDown, space_down: SwingLeft},
+            RunLeftDown: {left_up: RunDown, downkey_up: RunLeft, upkey_down: RunLeft, right_down: RunDown,
+                          space_down: SwingLeft},
             RunDown: {downkey_up: Idle, left_down: RunLeftDown, upkey_down: Idle, right_down: RunRightDown,
                       left_up: RunRightDown, right_up: RunLeftDown, space_down: SwingUp},
-            RunRightDown: {right_up: RunDown, downkey_up: RunRight, left_down: RunDown, upkey_down: RunRight, space_down: SwingRight},
+            RunRightDown: {right_up: RunDown, downkey_up: RunRight, left_down: RunDown, upkey_down: RunRight,
+                           space_down: SwingRight},
             SwingUp: {space_up: Idle},
             SwingLeft: {space_up: Idle},
-            SwingRight: {space_up: Idle}
+            SwingRight: {space_up: Idle},
+            Serve: {skey_up: Idle}
         }
 
     def start(self):
@@ -324,36 +355,33 @@ class StateMachine:
 
 
 class Character:
+
     def __init__(self):
         self.frame = 0
         self.action = 0
         # self.face_dir = 2
         self.dir = 0
-        self.image = load_image('mario123.png')
+        self.image = load_image('mario1234.png')
         self.state_machine = StateMachine(self)
         self.state_machine.start()
         self.ball_count = 1
         self.font = load_font('ENCR10B.TTF', 16)
-        # self.x, self.y = 258 * 2, 242 * 1.5
-        self.x, self.y = server.background.w // 2, server.background.h // 2
-
-    def swing(self):
-        self.action = 23 - 6
-        self.frame = (self.frame + FRAMES_PER_ACTION_FIV * ACTION_PER_TIME * game_framework.frame_time) % 5
-        self.image.clip_draw(int(self.frame) * 88, self.action * 88, 88, 88, self.x, self.y, 88 * 3, 88 * 3)
-        pass
+        self.x, self.y = 630, 270
+        # self.x, self.y = server.background.w // 2, server.background.h // 2
 
     def swing_ball(self):
         if self.ball_count > 0:
             self.ball_count -= 1
-            ball = Ball(self.x, self.y, self.dir*10)
+            ball = Ball(self.x, self.y, self.dir * 10)
             game_world.add_object(ball)
             game_world.add_collision_pair('character:ball', None, ball)
 
     def update(self):
         self.state_machine.update()
-        self.x = clamp(30, self.x, server.background.w - 30)
-        self.y = clamp(70, self.y, 1500)
+        # self.x = clamp(30, self.x, 990)
+        self.x = clamp(30, self.x, server.background.w - 50)
+        # self.y = clamp(250, self.y, 850)
+        self.y = clamp(250, self.y, server.background.h - 50)
 
     def handle_event(self, event):
         self.state_machine.handle_event(('INPUT', event))
@@ -373,3 +401,22 @@ class Character:
     def handle_collision(self, group, other):
         if group == 'character:ball':
             pass
+
+    def idle_action(self):
+        if self.action == 23:
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAIL
+
+    def swing(self):
+        self.action = 23 - 6
+        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
+        self.image.clip_draw(int(self.frame) * 88, self.action * 88, 88, 88, self.x, self.y, 88 * 3, 88 * 3)
+        return BehaviorTree.SUCCESS
+
+    def build_behavior_tree(self):
+        c1 = Condition('Idle', self.idle_action)
+        a1 = Action('Swing', self.swing)
+        root = SEQ_front_swing = Sequence('Front Swing', c1, a1)
+        self.bt = BehaviorTree(root)
+

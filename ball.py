@@ -36,20 +36,12 @@ class Ball:
         self.tx, self.ty = 0, 0
         self.build_behavior_tree()
 
-    # def __getstate__(self):
-    #     state = {'name': self.name, 'x': self.x, 'y': self.y, 'size': self.size}
-    #     return state
-    #
-    # def __setstate__(self, state):
-    #     self.__init__()
-    #     self.__dict__.update(state)
-
     def get_bb(self):
         return self.x - 50, self.y - 50, self.x + 50, self.y + 50
 
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
-        self.bt.run()
+        # self.bt.run()
 
     def draw(self):
         sx = self.x - server.background.window_left
@@ -63,6 +55,7 @@ class Ball:
     def handle_collision(self, group, other):
         if group == 'character:ball':
             # game_world.remove_object(self)
+            self.bt.run()
             pass
 
 
@@ -70,6 +63,13 @@ class Ball:
         if not x or not y:
             raise ValueError('Location should be given')
         self.tx, self.ty = x, y
+        return BehaviorTree.SUCCESS
+
+    def set_front_location(self):
+        # self.tx = random.randint(int(server.character.x - 20), int(server.character.x + 20))
+        # self.ty = random.randint(int(server.character.y + 1000), int(server.character.y + 1200))
+        self.tx = 600
+        self.ty = 600
         return BehaviorTree.SUCCESS
 
     def distance_less_than(self, x1, y1, x2, y2, r):
@@ -82,9 +82,33 @@ class Ball:
         self.x += self.speed * math.cos(self.dir) * game_framework.frame_time
         self.y += self.speed * math.sin(self.dir) * game_framework.frame_time
 
+    def move_up_to(self, tx, ty):
+        self.dir = math.atan2(ty - self.y, tx - self.x)
+        self.speed = RUN_SPEED_PPS
+        self.y += self.speed * math.sin(self.dir) * game_framework.frame_time
+
+    # def move_to(self, r=0.5):
+    #     self.move_slightly_to(self.tx, self.ty)
+    #     if self.distance_less_than(self.tx, self.ty, self.x, self.y, r):
+    #         return BehaviorTree.SUCCESS
+    #     else:
+    #         return BehaviorTree.RUNNING
+
     def move_to(self, r=0.5):
-        self.state = 'Walk'
-        self.move_slightly_to(self.tx, self.ty)
+        distance = math.sqrt((self.tx - self.x) ** 2 + (self.ty - self.y) ** 2)
+        speed = RUN_SPEED_PPS
+
+        if distance > 0:
+            dir_x = (self.tx - self.x) / distance
+            dir_y = (self.ty - self.y) / distance
+
+            self.x += speed * dir_x * game_framework.frame_time
+            self.y += speed * dir_y * game_framework.frame_time
+
+        return BehaviorTree.SUCCESS
+
+    def serve_move(self, r=0.5):
+        self.move_up_to(self.tx, self.ty)
         if self.distance_less_than(self.tx, self.ty, self.x, self.y, r):
             return BehaviorTree.SUCCESS
         else:
@@ -93,12 +117,53 @@ class Ball:
     def set_random_location(self):
         self.speed = RUN_SPEED_PPS
         # select random location around boy
-        self.tx = random.randint(110, 900)
-        self.ty = random.randint(500, 750)
+        self.tx = random.randint(225, 800)
+        self.ty = random.randint(560, 750)
         return BehaviorTree.SUCCESS
 
+    def character_swing_front_action(self):
+        if server.character.action == 23 - 6:
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAIL
+
+    def character_swing_left_action(self):
+        if server.character.action == 23 - 4:
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAIL
+
+    def character_swing_right_action(self):
+        if server.character.action == 23 - 2:
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAIL
+
+    def character_serve_action(self):
+        if server.character.action == 23 - 8:
+            return BehaviorTree.SUCCESS
+        else:
+            return BehaviorTree.FAIL
+
     def build_behavior_tree(self):
-        a1 = Action('Set random location', self.set_random_location)
-        a2 = Action('Move to', self.move_to)
-        root = SEQ_wander = Sequence('Wander', a1, a2)
+        # a1 = Action('Set random location', self.set_random_location)
+        # a2 = Action('Move to', self.move_to)
+        # root = SEQ_wander = Sequence('Wander', a1, a2)
+        c1 = Condition('character serve action', self.character_serve_action)
+        a1 = Action('serve move', self.serve_move)
+        SEQ_serve_move = Sequence('serve move', c1, a1)
+
+        c2 = Condition('character swing up action', self.character_swing_front_action)
+        c3 = Condition('character swing left action', self.character_swing_left_action)
+        c4 = Condition('character swing right action', self.character_swing_right_action)
+        a2 = Action('set front loaction', self.set_front_location)
+        a3 = Action('move to', self.move_to)
+        root = SEQ_front_move = Sequence('front move', c2, a2, a3)
+        SEQ_left_move = Sequence('left move', c3, a2)
+        SEQ_right_move = Sequence('right move', c4, a2)
+
+        SEL_swing_move = Selector('up or left or right', SEQ_front_move, SEQ_left_move, SEQ_right_move)
+
+        SEL_serve_or_swing = Selector('serve or swing', SEQ_serve_move, SEL_swing_move)
+
         self.bt = BehaviorTree(root)
