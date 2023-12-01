@@ -2,8 +2,10 @@ from pico2d import load_image, get_events, clear_canvas, update_canvas, pico2d
 from sdl2 import SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE, SDLK_SPACE
 
 import game_framework
-import mapselect_mode2
+import mapselect_mode
+import mapselect_mode3
 import play_mode
+import play_mode2
 import title_mode
 
 
@@ -43,22 +45,25 @@ def handle_events():
             match event.key:
                 case pico2d.SDLK_SPACE:
                     game_framework.pop_mode()
-                    game_framework.change_mode(play_mode)
+                    game_framework.change_mode(play_mode2)
                     pass
                 case pico2d.SDLK_RIGHT:
                     game_framework.pop_mode()
-                    game_framework.change_mode(mapselect_mode2)
+                    game_framework.change_mode(mapselect_mode3)
+                case pico2d.SDLK_LEFT:
+                    game_framework.pop_mode()
+                    game_framework.change_mode(mapselect_mode)
                     pass
 
 
 def draw():
     clear_canvas()
     mapselectimage.draw(400, 400)
-    selectimage.draw(100, 440)
+    selectimage.draw(300, 440)
     level1_color.draw(100, 440)
     level2_color.draw(300, 440)
     level3_color.draw(500, 440)
-    level4_color.draw(700,440)
+    level4_color.draw(700, 440)
     update_canvas()
 
 

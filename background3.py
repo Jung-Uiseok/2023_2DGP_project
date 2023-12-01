@@ -9,7 +9,7 @@ from pico2d import *
 class FixedBackground:
 
     def __init__(self):
-        self.image = load_image('court1.png')
+        self.image = load_image('court3.png')
         self.cw = get_canvas_width()
         self.ch = get_canvas_height()
 
@@ -39,9 +39,8 @@ class TileBackground:
     def __init__(self):
         self.cw = get_canvas_width()
         self.ch = get_canvas_height()
-        self.w = 1020 * 2
-        self.h = 1020 * 2
-        self.tiles = [ [load_image('court%d%d.png' % (x, y)) for x in range(2) ] for y in range(2) ]
+        self.w = 800 * 3
+        self.h = 600 * 3
 
     def update(self):
         pass
@@ -49,18 +48,6 @@ class TileBackground:
     def draw(self):
         self.window_left = clamp(0, int(server.character.x) - self.cw // 2, self.w - self.cw - 1)
         self.window_bottom = clamp(0, int(server.character.y) - self.ch // 2, self.h - self.ch - 1)
-
-        tile_left = self.window_left // 1020
-        tile_right = (self.window_left + self.cw) // 1020
-        left_offset = self.window_left % 1020
-
-        tile_bottom = self.window_bottom // 1020
-        tile_top = (self.window_bottom + self.ch) // 1020
-        bottom_offset = self.window_bottom % 1020
-
-        for ty in range(tile_bottom, tile_top+1):
-            for tx in range(tile_left, tile_right+1):
-                self.tiles[ty][tx].draw_to_origin(-left_offset + (tx-tile_left)*1020, -bottom_offset+(ty-tile_bottom)*1020)
 
 
 cx = 900 % 800

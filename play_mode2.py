@@ -9,8 +9,7 @@ from ball import Ball
 from map import Map
 from character import Character
 
-from background import FixedBackground as Background
-# from background import TileBackground as Background
+from background2 import FixedBackground as Background2
 
 
 def handle_events():
@@ -26,8 +25,8 @@ def handle_events():
 
 def init():
 
-    server.background = Background()
-    game_world.add_object(server.background, 0)
+    server.background2 = Background2()
+    game_world.add_object(server.background2, 0)
 
     server.character = Character()
     game_world.add_object(server.character, 1)
