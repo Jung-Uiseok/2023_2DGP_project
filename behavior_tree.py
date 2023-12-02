@@ -25,16 +25,22 @@ class BehaviorTree:
     # 'MONITOR' : evaluate only condition nodes
     run_mode = 'EVAL'
 
-    def __init__(self, root_node):
-        self.root = root_node
-        self.root.tag_condition()
+    def __init__(self, *root_nodes):
+        # self.root = root_node
+        # self.root.tag_condition()
+        self.roots = list(root_nodes)
 
     def run(self):
         print(
             '\n========================================== NEW TICK =======================================================')
-        self.root.run()
-        if self.root.value == BehaviorTree.SUCCESS:
-            self.root.reset()
+        # self.root.run()
+        # if self.root.value == BehaviorTree.SUCCESS:
+        #     self.root.reset()
+        for root in self.roots:
+            root.tag_condition()
+            root.run()
+            if root.value == BehaviorTree.SUCCESS:
+                root.reset()
 
 
 class Node:
