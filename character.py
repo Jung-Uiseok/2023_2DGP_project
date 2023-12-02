@@ -83,8 +83,6 @@ class Idle:
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
         pass
 
     @staticmethod
@@ -101,8 +99,6 @@ class RunRight:
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
         pass
 
     @staticmethod
@@ -119,8 +115,6 @@ class RunRightUp:
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
         pass
 
     @staticmethod
@@ -137,8 +131,6 @@ class RunRightDown:
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
         pass
 
     @staticmethod
@@ -155,8 +147,6 @@ class RunLeft:
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
         pass
 
     @staticmethod
@@ -173,8 +163,6 @@ class RunLeftUp:
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
         pass
 
     @staticmethod
@@ -191,8 +179,6 @@ class RunLeftDown:
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
         pass
 
     @staticmethod
@@ -209,8 +195,6 @@ class RunUp:
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
         pass
 
     @staticmethod
@@ -227,8 +211,6 @@ class RunDown:
 
     @staticmethod
     def exit(character, e):
-        if space_down(e):
-            character.swing_ball()
         pass
 
     @staticmethod
@@ -243,6 +225,7 @@ class SwingUp:
         character.action = 23 - 6
         character.speed = 0
         character.dir = 0
+        character.swing_time = get_time()
 
     @staticmethod
     def exit(character, e):
@@ -250,6 +233,8 @@ class SwingUp:
 
     @staticmethod
     def do(character):
+        if get_time() - character.swing_time > 0.5:
+            character.state_machine.handle_event(('TIME_OUT', 0))
         pass
 
 
@@ -260,6 +245,7 @@ class SwingLeft:
         character.action = 23 - 4
         character.speed = 0
         character.dir = 0
+        character.swing_time = get_time()
 
     @staticmethod
     def exit(character, e):
@@ -267,6 +253,8 @@ class SwingLeft:
 
     @staticmethod
     def do(character):
+        if get_time() - character.swing_time > 0.5:
+            character.state_machine.handle_event(('TIME_OUT', 0))
         pass
 
 
@@ -277,6 +265,7 @@ class SwingRight:
         character.action = 23 - 2
         character.speed = 0
         character.dir = 0
+        character.swing_time = get_time()
 
     @staticmethod
     def exit(character, e):
@@ -284,6 +273,8 @@ class SwingRight:
 
     @staticmethod
     def do(character):
+        if get_time() - character.swing_time > 0.5:
+            character.state_machine.handle_event(('TIME_OUT', 0))
         pass
 
 
@@ -291,9 +282,12 @@ class Serve:
 
     @staticmethod
     def enter(character, e):
+        if skey_down(e):
+            character.swing_ball()
         character.action = 23 - 8
         character.speed = 0
         character.dir = 0
+        character.swing_time = get_time()
 
     @staticmethod
     def exit(character, e):
@@ -301,6 +295,8 @@ class Serve:
 
     @staticmethod
     def do(character):
+        if get_time() - character.swing_time > 0.5:
+            character.state_machine.handle_event(('TIME_OUT', 0))
         pass
 
 
@@ -328,11 +324,12 @@ class StateMachine:
                       left_up: RunRightDown, right_up: RunLeftDown, space_down: SwingUp},
             RunRightDown: {right_up: RunDown, downkey_up: RunRight, left_down: RunDown, upkey_down: RunRight,
                            space_down: SwingRight},
-            SwingUp: {space_up: Idle},
-            SwingLeft: {space_up: Idle},
-            SwingRight: {space_up: Idle},
-            Serve: {skey_up: Idle}
+            SwingUp: {time_out: Idle},
+            SwingLeft: {time_out: Idle},
+            SwingRight: {time_out: Idle},
+            Serve: {time_out: Idle}
         }
+
 
     def start(self):
         self.cur_state.enter(self.character, ('NONE', 0))
@@ -402,21 +399,4 @@ class Character:
         if group == 'character:ball':
             pass
 
-    def idle_action(self):
-        if self.action == 23:
-            return BehaviorTree.SUCCESS
-        else:
-            return BehaviorTree.FAIL
-
-    def swing(self):
-        self.action = 23 - 6
-        self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % 6
-        self.image.clip_draw(int(self.frame) * 88, self.action * 88, 88, 88, self.x, self.y, 88 * 3, 88 * 3)
-        return BehaviorTree.SUCCESS
-
-    def build_behavior_tree(self):
-        c1 = Condition('Idle', self.idle_action)
-        a1 = Action('Swing', self.swing)
-        root = SEQ_front_swing = Sequence('Front Swing', c1, a1)
-        self.bt = BehaviorTree(root)
 
