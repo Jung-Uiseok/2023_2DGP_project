@@ -363,7 +363,7 @@ class Character:
         self.state_machine.start()
         self.ball_count = 1
         self.font = load_font('ENCR10B.TTF', 16)
-        self.x, self.y = 630, 270
+        self.x, self.y = 535, 288
         # self.x, self.y = server.background.w // 2, server.background.h // 2
 
     def swing_ball(self, x=500, y=600):

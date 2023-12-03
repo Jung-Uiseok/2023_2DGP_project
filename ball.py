@@ -51,7 +51,7 @@ class Ball:
 
     def update(self):
         self.frame = (self.frame + FRAMES_PER_ACTION * ACTION_PER_TIME * game_framework.frame_time) % FRAMES_PER_ACTION
-        self.bt1.run()
+        # self.bt2.run()
 
     def draw(self):
         sx = self.x - server.background.window_left
@@ -67,7 +67,7 @@ class Ball:
     def handle_collision(self, group, other):
         if group == 'character:ball':
             # game_world.remove_object(self)
-            self.bt2.run()
+            # self.bt2.run()
             pass
 
     def set_front_location(self):
